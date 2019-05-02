@@ -71,7 +71,8 @@ def saveInOneFile(filename, spectra, markup, wavenumbers):
 
 def convertOpusFiles(result_filename, files):
     spectra, markup, wavenumbers = loadData(files)
-    logging.info(' Data size: {}'.format(spectra.shape))
+    logging.info(alignMessage('Number of spectra', len(spectra)))
+    logging.info(alignMessage('Number of wavenumbers', spectra.shape[1]))
 
     if args.format == 'csv':
         if args.onefile:
@@ -93,6 +94,10 @@ def convertOpusFiles(result_filename, files):
         scipy.io.savemat(result_filename + '.mat', dict)
 
 
+def alignMessage(msg, value):
+    return '{:<24}: {}'.format(msg, value)
+
+
 def recursiveWalk(cur_path, folders, cur_depth):
     if cur_depth > args.search_depth:
         return
@@ -103,7 +108,7 @@ def recursiveWalk(cur_path, folders, cur_depth):
 
     opus_files = [os.path.join(cur_path, f) for f in opus_files]
     if len(opus_files) > 0:
-        logging.info(' Found files in folder ' + cur_path)
+        logging.info(alignMessage('Found files in folder', cur_path))
         if args.save_inplace:
             result_file = os.path.join(cur_path, '_'.join(folders))
         else:
@@ -111,13 +116,24 @@ def recursiveWalk(cur_path, folders, cur_depth):
         
         try:
             convertOpusFiles(result_file, opus_files)
+            logging.info(alignMessage('Saved in', result_file))
         except AssertionError as e:
             logging.error(e)
+        logging.info('')
 
     for d in dirs:
         folders.append(d)
         recursiveWalk(os.path.join(cur_path, d), folders, cur_depth+1)
         folders.pop()
+
+
+def setupLogging():
+    logging.basicConfig(format='%(levelname)s - %(message)s')
+    if args.verbose:
+        logging.getLogger().setLevel(logging.INFO)
+
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
 
 
 if __name__ == '__main__':
@@ -140,11 +156,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.verbose:
-        logging.getLogger().setLevel(logging.INFO)
-
-    if args.debug:
-        logging.getLogger().setLevel(logging.DEBUG)
+    setupLogging()
 
     if args.onefile and args.format != 'csv':
         parser.error('You can group files into one only with specified csv format! Try to add -f csv')
