@@ -76,17 +76,34 @@ def convertOpusFiles(result_filename, files):
 
     if args.format == 'csv':
         if args.onefile:
+            check_name = result_filename + '.csv'
+            if os.path.isfile(check_name) and not args.update:
+                raise FileExistsError('The result for {} already exists'.format(check_name))
+
             saveInOneFile(result_filename + '.csv', 
-                            spectra, markup, wavenumbers)
+                          spectra, markup, wavenumbers)
         else:
+            check_name = result_filename + '_spectra.csv'
+            if os.path.isfile(check_name) and not args.update:
+                raise FileExistsError('The result for {} already exists'.format(check_name))
+
             np.savetxt(result_filename + '_wavenumbers.csv', wavenumbers)
             np.savetxt(result_filename + '_markup.csv', markup, fmt='%s')
             np.savetxt(result_filename + '_spectra.csv', spectra)
+
     elif args.format == 'npy':
+        check_name = result_filename + '_spectra.npy'
+        if os.path.isfile(check_name) and not args.update:
+            raise FileExistsError('The result for {} already exists'.format(check_name))
+
         np.save(result_filename + '_wavenumbers', wavenumbers)
         np.save(result_filename + '_markup', markup)
         np.save(result_filename + '_spectra', spectra)
     else:
+        check_name = result_filename + '.mat'
+        if os.path.isfile(check_name) and not args.update:
+            raise FileExistsError('The result for {} already exists'.format(check_name))
+
         dict = {}
         dict['wavenumbers'] = wavenumbers
         dict['markup'] = markup
@@ -119,6 +136,8 @@ def recursiveWalk(cur_path, folders, cur_depth):
             logging.info(alignMessage('Saved in', result_file))
         except AssertionError as e:
             logging.error(e)
+        except FileExistsError as e:
+            logging.warn(e)
         logging.info('')
 
     for d in dirs:
@@ -139,12 +158,12 @@ def setupLogging():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Utility for converting files from OPUS format .0 to .mat;.csv;.npy')
     parser.add_argument('directory', default='.', 
-                        help='Directory where to start the search')
+                        help='directory where to start the search')
     parser.add_argument('-f', '--format', default='mat', choices=['mat', 'csv', 'npy'])
     parser.add_argument('-one', '--onefile', action='store_true', default=False,
-                        help="Pack all information into one csv file (doesn't work with another formats)")
+                        help="pack all information into one csv file (doesn't work with another formats)")
     parser.add_argument('-s', '--split', action='store_true', default=False,
-                        help='Splits sample name with --separator into columns')
+                        help='splits sample name with --separator into columns')
     parser.add_argument('-sep', '--separator', default='_',
                         help='separator which used to split sample name if --split is used')
     parser.add_argument('-depth', '--search-depth', default=3)
@@ -153,6 +172,8 @@ if __name__ == '__main__':
     parser.add_argument('-out', '--output-directory', default='.')
     parser.add_argument('-i', '--save-inplace', action='store_true', default=False,
                         help='save result files in folder with spectra')
+    parser.add_argument('-u', '--update', action='store_true', default=False,
+                        help='rewrites files which already exist')
 
     args = parser.parse_args()
 

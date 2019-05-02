@@ -37,6 +37,7 @@ optional arguments:
   -v, --verbose
   -out OUTPUT_DIRECTORY, --output-directory OUTPUT_DIRECTORY
   -i, --save-inplace    save result files in folder with spectra
+  -u, --update          rewrites files which already exist
 ```
 
 ### Examples
@@ -76,6 +77,8 @@ need to pass `-s` or `--split`. You can also specify a separator by passing para
 
 By default all output files will be saved in current directory, but you can specify output directory by passing 
 `-out directory`. You can also save output files together with corresponded  .0 files by passing `-i` or `--save-inplace`.
+
+By default it will not rewrite result files if they exist. In order to enable this specify `-u` or `--update`
 
 By default you will see only error messages, but you can also enable information messages, then you will see what folders
 found and how much of data was gathered in them. For this you need to specify `-v` or `--verbose`.
