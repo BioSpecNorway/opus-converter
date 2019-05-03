@@ -39,6 +39,8 @@ def parseFileNames(files):
         markup = []
         splitted = np.char.split(labels, args.separator)
         for label, split in zip(labels, splitted):
+            if args.drop_last_column:
+                split = split[:-1]
             markup.append([label] + split)
 
         if not all(len(m) == len(markup[0]) for m in markup):
@@ -176,6 +178,8 @@ if __name__ == '__main__':
                         help='splits sample name with --separator into columns')
     parser.add_argument('-fix', '--fix-table', action='store_true', default=False,
                         help='fixes table after splitting by inserting empty cells')
+    parser.add_argument('-drop', '--drop-last-column', action='store_true', default=False,
+                        help='drops last column if split was used (usually position column)')
     parser.add_argument('-sep', '--separator', default='_',
                         help='separator which used to split sample name if --split is used')
     parser.add_argument('-depth', '--search-depth', default=3)

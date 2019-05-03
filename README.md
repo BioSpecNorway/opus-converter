@@ -30,6 +30,9 @@ optional arguments:
                         with another formats)
   -s, --split           Splits sample name with --separator into columns
   -fix, --fix-table     fixes table after splitting by inserting empty cells
+  -drop, --drop-last-column
+                        drops last column if split was used (usually position
+                        column)
   -sep SEPARATOR, --separator SEPARATOR
                         separator which used to split sample name if --split
                         is used
