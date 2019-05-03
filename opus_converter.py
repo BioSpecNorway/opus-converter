@@ -138,7 +138,7 @@ def recursiveWalk(cur_path, folders, cur_depth):
     if len(opus_files) > 0:
         logging.info(alignMessage('Found files in folder', cur_path))
         if args.save_inplace:
-            result_file = os.path.join(cur_path, '_'.join(folders))
+            result_file = os.path.join(cur_path, '__' + '_'.join(folders))
         else:
             result_file = os.path.join(args.output_directory, '_'.join(folders))
         
