@@ -35,7 +35,7 @@ optional arguments:
                         is used
   -depth SEARCH_DEPTH, --search-depth SEARCH_DEPTH
   --debug
-  -v, --verbose
+  -q, --quiet
   -out OUTPUT_DIRECTORY, --output-directory OUTPUT_DIRECTORY
   -i, --save-inplace    save result files in folder with spectra
   -u, --update          rewrites files which already exist
@@ -62,7 +62,7 @@ python opus_converter.py . -f csv --onefile --split
 
 In order to run script you should write `python opus_converter.py start_folder`. Where start_folder is a folder 
 where search will start. If you want to start it in current directory you can just type . (point), that usually means 
-current dirrectory.
+current directory.
 
 By default it doesn't go deeper than 3 folders. You can change the depth of search by passing parameter `-depth n`.
 By default it will convert into ont .mat file. You can select a format by passing parameter `-f format`, where format 

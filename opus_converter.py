@@ -157,8 +157,9 @@ def recursiveWalk(cur_path, folders, cur_depth):
 
 def setupLogging():
     logging.basicConfig(format='%(levelname)s - %(message)s')
-    if args.verbose:
-        logging.getLogger().setLevel(logging.INFO)
+    logging.getLogger().setLevel(logging.INFO)
+    if args.quiet:
+        logging.getLogger().setLevel(logging.ERROR)
 
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
@@ -179,7 +180,7 @@ if __name__ == '__main__':
                         help='separator which used to split sample name if --split is used')
     parser.add_argument('-depth', '--search-depth', default=3)
     parser.add_argument('--debug', action='store_true', default=False)
-    parser.add_argument('-v', '--verbose', action='store_true', default=False)
+    parser.add_argument('-q', '--quiet', action='store_true', default=False)
     parser.add_argument('-out', '--output-directory', default='.')
     parser.add_argument('-i', '--save-inplace', action='store_true', default=False,
                         help='save result files in folder with spectra')
