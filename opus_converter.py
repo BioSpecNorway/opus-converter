@@ -40,9 +40,18 @@ def parseFileNames(files):
         splitted = np.char.split(labels, args.separator)
         for label, split in zip(labels, splitted):
             markup.append([label] + split)
-        
-        assert all(len(m) == len(markup[0]) for m in markup), \
-            'Names in {} cannot be splitted in a table!'.format(os.path.split(files[0])[0])
+
+        if not all(len(m) == len(markup[0]) for m in markup):
+            if args.fix_table:
+                max_len = max([len(m) for m in markup])
+                cnt = 0
+                for m in markup:
+                    cnt += (max_len - len(m)) > 0
+                    m.extend(['Empty']*(max_len - len(m)))
+                logging.warning('{} samples were fixed in the table'.format(cnt))
+            else:
+                msg = 'Names in {} cannot be splitted in the table!'
+                raise AssertionError(msg.format(os.path.split(files[0])[0]))
 
         markup = np.array(markup)
     else:
@@ -164,6 +173,8 @@ if __name__ == '__main__':
                         help="pack all information into one csv file (doesn't work with another formats)")
     parser.add_argument('-s', '--split', action='store_true', default=False,
                         help='splits sample name with --separator into columns')
+    parser.add_argument('-fix', '--fix-table', action='store_true', default=False,
+                        help='fixes table after splitting by inserting empty cells')
     parser.add_argument('-sep', '--separator', default='_',
                         help='separator which used to split sample name if --split is used')
     parser.add_argument('-depth', '--search-depth', default=3)

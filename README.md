@@ -29,6 +29,7 @@ optional arguments:
   -one, --onefile       Pack all information into one csv file (doesn't work
                         with another formats)
   -s, --split           Splits sample name with --separator into columns
+  -fix, --fix-table     fixes table after splitting by inserting empty cells
   -sep SEPARATOR, --separator SEPARATOR
                         separator which used to split sample name if --split
                         is used
