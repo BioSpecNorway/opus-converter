@@ -127,7 +127,7 @@ def processOpusFiles(opus_files, result_filename):
         logging.info(alignMessage('Number of spectra', len(spectra)))
         logging.info(alignMessage('Number of wavenumbers', spectra.shape[1]))
 
-        save(opus_files, spectra, markup, wavenumbers)
+        save(result_filename, spectra, markup, wavenumbers)
         logging.info(alignMessage('Saved in', result_filename))
     except AssertionError as e:
         logging.error(e)
@@ -147,14 +147,14 @@ def recursiveWalk(cur_path, folders, cur_depth):
         else:
             filename = os.path.join(args.output_directory, '_'.join(folders))
 
-        logging.info(['-']*80)
+        logging.info('-'*80)
         logging.info(alignMessage('Found files in folder', cur_path))
         processOpusFiles(opus_files, filename)
         logging.info('')
 
     for d in dirs:
-        folders.append(d)
-        recursiveWalk(os.path.join(cur_path, d), folders, cur_depth+1)
+        folders.append(os.path.basename(d))
+        recursiveWalk(d, folders, cur_depth+1)
         folders.pop()
 
 
