@@ -131,7 +131,6 @@ def processOpusFiles(opus_files, result_filename):
         logging.info(alignMessage('Saved in', result_filename))
     except AssertionError as e:
         logging.error(e)
-    logging.info('')
 
 
 def recursiveWalk(cur_path, folders, cur_depth):
@@ -148,8 +147,10 @@ def recursiveWalk(cur_path, folders, cur_depth):
         else:
             filename = os.path.join(args.output_directory, '_'.join(folders))
 
+        logging.info(['-']*80)
         logging.info(alignMessage('Found files in folder', cur_path))
         processOpusFiles(opus_files, filename)
+        logging.info('')
 
     for d in dirs:
         folders.append(d)
