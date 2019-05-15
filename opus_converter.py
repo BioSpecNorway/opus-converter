@@ -182,7 +182,7 @@ if __name__ == '__main__':
                         help='drops last column if split was used (usually position column)')
     parser.add_argument('-sep', '--separator', default='_',
                         help='separator which used to split sample name if --split is used')
-    parser.add_argument('-depth', '--search-depth', default=3)
+    parser.add_argument('-depth', '--search-depth', default=3, type=int)
     parser.add_argument('--debug', action='store_true', default=False)
     parser.add_argument('-q', '--quiet', action='store_true', default=False)
     parser.add_argument('-out', '--output-directory', default='.')
