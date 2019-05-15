@@ -13,22 +13,22 @@ pip install numpy scipy pandas opusFC
 ### Quick reference
 
 ```
-usage: opus_converter.py [-h] [-f {mat,csv,npy}] [-one] [-s] [-sep SEPARATOR]
-                         [-depth SEARCH_DEPTH] [--debug] [-v]
-                         [-out OUTPUT_DIRECTORY] [-i]
+usage: opus_converter.py [-h] [-f {mat,csv,npy}] [-one] [-s] [-fix] [-drop]
+                         [-sep SEPARATOR] [-depth SEARCH_DEPTH] [--debug] [-q]
+                         [-out OUTPUT_DIRECTORY] [-i] [-u]
                          directory
 
 Utility for converting files from OPUS format .0 to .mat;.csv;.npy
 
 positional arguments:
-  directory             Directory where to start the search
+  directory             directory where to start the search
 
 optional arguments:
   -h, --help            show this help message and exit
   -f {mat,csv,npy}, --format {mat,csv,npy}
-  -one, --onefile       Pack all information into one csv file (doesn't work
+  -one, --onefile       pack all information into one csv file (doesn't work
                         with another formats)
-  -s, --split           Splits sample name with --separator into columns
+  -s, --split           splits sample name with --separator into columns
   -fix, --fix-table     fixes table after splitting by inserting empty cells
   -drop, --drop-last-column
                         drops last column if split was used (usually position
@@ -68,7 +68,7 @@ where search will start. If you want to start it in current directory you can ju
 current directory.
 
 By default it doesn't go deeper than 3 folders. You can change the depth of search by passing parameter `-depth n`.
-By default it will convert into ont .mat file. You can select a format by passing parameter `-f format`, where format 
+By default it will convert into one .mat file. You can select a format by passing parameter `-f format`, where format 
 can be mat, csv or npy. 
 
 Csv is the format that can be read by Excel. By default it will create 3 separate files for each folder: spectra.csv, 
@@ -84,5 +84,4 @@ By default all output files will be saved in current directory, but you can spec
 
 By default it will not rewrite result files if they exist. In order to enable this specify `-u` or `--update`
 
-By default you will see only error messages, but you can also enable information messages, then you will see what folders
-found and how much of data was gathered in them. For this you need to specify `-v` or `--verbose`.
+By default you will see a lot of information, in order to see only error pass `-q` or `--quiet`.
