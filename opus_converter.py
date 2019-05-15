@@ -87,34 +87,18 @@ def convertOpusFiles(result_filename, files):
 
     if args.format == 'csv':
         if args.onefile:
-            check_name = result_filename + '.csv'
-            if os.path.isfile(check_name) and not args.update:
-                raise FileExistsError('The result for {} already exists'.format(check_name))
-
             saveInOneFile(result_filename + '.csv', 
                           spectra, markup, wavenumbers)
         else:
-            check_name = result_filename + '_spectra.csv'
-            if os.path.isfile(check_name) and not args.update:
-                raise FileExistsError('The result for {} already exists'.format(check_name))
-
             np.savetxt(result_filename + '_wavenumbers.csv', wavenumbers)
             np.savetxt(result_filename + '_markup.csv', markup, fmt='%s')
             np.savetxt(result_filename + '_spectra.csv', spectra)
 
     elif args.format == 'npy':
-        check_name = result_filename + '_spectra.npy'
-        if os.path.isfile(check_name) and not args.update:
-            raise FileExistsError('The result for {} already exists'.format(check_name))
-
         np.save(result_filename + '_wavenumbers', wavenumbers)
         np.save(result_filename + '_markup', markup)
         np.save(result_filename + '_spectra', spectra)
     else:
-        check_name = result_filename + '.mat'
-        if os.path.isfile(check_name) and not args.update:
-            raise FileExistsError('The result for {} already exists'.format(check_name))
-
         dict = {}
         dict['wavenumbers'] = wavenumbers
         dict['markup'] = markup
@@ -124,6 +108,17 @@ def convertOpusFiles(result_filename, files):
 
 def alignMessage(msg, value):
     return '{:<24}: {}'.format(msg, value)
+
+
+def isResultExists(result_filename):
+    check_name = result_filename
+
+    if args.onefile or args.format == 'mat':
+        check_name += '.' + args.format
+    else:
+        check_name += '_spectra.' + args.format
+
+    return os.path.isfile(check_name)
 
 
 def recursiveWalk(cur_path, folders, cur_depth):
@@ -143,12 +138,13 @@ def recursiveWalk(cur_path, folders, cur_depth):
             result_file = os.path.join(args.output_directory, '_'.join(folders))
         
         try:
-            convertOpusFiles(result_file, opus_files)
-            logging.info(alignMessage('Saved in', result_file))
+            if not isResultExists(result_file) or args.update:
+                convertOpusFiles(result_file, opus_files)
+                logging.info(alignMessage('Saved in', result_file))
+            else:
+                logging.warn('The result for {} already exists'.format(result_file))
         except AssertionError as e:
             logging.error(e)
-        except FileExistsError as e:
-            logging.warn(e)
         logging.info('')
 
     for d in dirs:
