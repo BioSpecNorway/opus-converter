@@ -161,7 +161,7 @@ def setupLogging():
     logging.basicConfig(format='%(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.INFO)
     if args.quiet:
-        logging.getLogger().setLevel(logging.ERROR)
+        logging.getLogger().setLevel(logging.WARNING)
 
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
