@@ -62,7 +62,7 @@ def parseFileNames(files):
     return markup
 
 
-def loadData(files):
+def loadAndProcessData(files):
     spectra, wavenumbers = readOpusFiles(files)
     markup = parseFileNames(files)
 
@@ -80,11 +80,7 @@ def saveInOneFile(filename, spectra, markup, wavenumbers):
     markup_df.join(spectra_df).to_csv(filename, index=False)
 
 
-def convertOpusFiles(result_filename, files):
-    spectra, markup, wavenumbers = loadData(files)
-    logging.info(alignMessage('Number of spectra', len(spectra)))
-    logging.info(alignMessage('Number of wavenumbers', spectra.shape[1]))
-
+def save(result_filename, spectra, markup, wavenumbers):
     if args.format == 'csv':
         if args.onefile:
             saveInOneFile(result_filename + '.csv', 
@@ -121,31 +117,39 @@ def isResultExists(result_filename):
     return os.path.isfile(check_name)
 
 
+def processOpusFiles(opus_files, result_filename):
+    if isResultExists(result_filename) and not args.update:
+        logging.warning('The result for {} already exists'.format(result_filename))
+        return
+    
+    try:
+        spectra, markup, wavenumbers = loadAndProcessData(opus_files)
+        logging.info(alignMessage('Number of spectra', len(spectra)))
+        logging.info(alignMessage('Number of wavenumbers', spectra.shape[1]))
+
+        save(opus_files, spectra, markup, wavenumbers)
+        logging.info(alignMessage('Saved in', result_filename))
+    except AssertionError as e:
+        logging.error(e)
+    logging.info('')
+
+
 def recursiveWalk(cur_path, folders, cur_depth):
     if cur_depth > args.search_depth:
         return
 
-    files_list = os.listdir(cur_path)
-    dirs = filter(lambda f: os.path.isdir(os.path.join(cur_path, f)), files_list)
-    opus_files = filter(lambda f: isOpusFile(os.path.join(cur_path, f)), files_list)
+    files_list = [os.path.join(cur_path, f) for f in os.listdir(cur_path)]
+    dirs = filter(lambda f: os.path.isdir(f), files_list)
+    opus_files = list(filter(lambda f: isOpusFile(f), files_list))
 
-    opus_files = [os.path.join(cur_path, f) for f in opus_files]
     if len(opus_files) > 0:
-        logging.info(alignMessage('Found files in folder', cur_path))
         if args.save_inplace:
-            result_file = os.path.join(cur_path, '__' + '_'.join(folders))
+            filename = os.path.join(cur_path, '__' + '_'.join(folders))
         else:
-            result_file = os.path.join(args.output_directory, '_'.join(folders))
-        
-        try:
-            if not isResultExists(result_file) or args.update:
-                convertOpusFiles(result_file, opus_files)
-                logging.info(alignMessage('Saved in', result_file))
-            else:
-                logging.warn('The result for {} already exists'.format(result_file))
-        except AssertionError as e:
-            logging.error(e)
-        logging.info('')
+            filename = os.path.join(args.output_directory, '_'.join(folders))
+
+        logging.info(alignMessage('Found files in folder', cur_path))
+        processOpusFiles(opus_files, filename)
 
     for d in dirs:
         folders.append(d)
