@@ -77,7 +77,7 @@ def saveInOneFile(filename, spectra, markup, wavenumbers):
     markup_df = pd.DataFrame(data=markup, columns=col_names)
 
     # save
-    markup_df.join(spectra_df).to_csv(filename, index=False)
+    markup_df.join(spectra_df).to_csv(filename, index=False, sep=args.csv_separator)
 
 
 def save(result_filename, spectra, markup, wavenumbers):
@@ -86,9 +86,9 @@ def save(result_filename, spectra, markup, wavenumbers):
             saveInOneFile(result_filename + '.csv', 
                           spectra, markup, wavenumbers)
         else:
-            np.savetxt(result_filename + '_wavenumbers.csv', wavenumbers)
-            np.savetxt(result_filename + '_markup.csv', markup, fmt='%s')
-            np.savetxt(result_filename + '_spectra.csv', spectra)
+            np.savetxt(result_filename + '_wavenumbers.csv', wavenumbers, delimiter=args.csv_separator)
+            np.savetxt(result_filename + '_markup.csv', markup, fmt='%s', delimiter=args.csv_separator)
+            np.savetxt(result_filename + '_spectra.csv', spectra, delimiter=args.csv_separator)
 
     elif args.format == 'npy':
         np.save(result_filename + '_wavenumbers', wavenumbers)
@@ -191,6 +191,7 @@ if __name__ == '__main__':
                         help='save result files in folder with spectra')
     parser.add_argument('-u', '--update', action='store_true', default=False,
                         help='rewrites files which already exist')
+    parser.add_argument('-csvsep', '--csv-separator', default=',')
 
     args = parser.parse_args()
 
