@@ -82,7 +82,7 @@ def saveInOneFile(filename, spectra, markup, wavenumbers):
 
 def save(result_filename, spectra, markup, wavenumbers):
     if args.format == 'csv':
-        if args.onefile:
+        if args.one_file:
             saveInOneFile(result_filename + '.csv', 
                           spectra, markup, wavenumbers)
         else:
@@ -109,7 +109,7 @@ def alignMessage(msg, value):
 def isResultExists(result_filename):
     check_name = result_filename
 
-    if args.onefile or args.format == 'mat':
+    if args.one_file or args.format == 'mat':
         check_name += '.' + args.format
     else:
         check_name += '_spectra.' + args.format
@@ -173,7 +173,7 @@ if __name__ == '__main__':
     parser.add_argument('directory', default='.', 
                         help='directory where to start the search')
     parser.add_argument('-f', '--format', default='mat', choices=['mat', 'csv', 'npy'])
-    parser.add_argument('-one', '--onefile', action='store_true', default=False,
+    parser.add_argument('-one', '--one-file', action='store_true', default=False,
                         help="pack all information into one csv file (doesn't work with another formats)")
     parser.add_argument('-s', '--split', action='store_true', default=False,
                         help='splits sample name with --separator into columns')
@@ -197,7 +197,7 @@ if __name__ == '__main__':
 
     setupLogging()
 
-    if args.onefile and args.format != 'csv':
+    if args.one_file and args.format != 'csv':
         parser.error('You can group files into one only with specified csv format! Try to add -f csv')
 
     os.makedirs(args.output_directory, exist_ok=True)
