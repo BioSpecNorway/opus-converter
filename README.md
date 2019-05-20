@@ -26,7 +26,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -f {mat,csv,npy}, --format {mat,csv,npy}
-  -one, --onefile       pack all information into one csv file (doesn't work
+  -one, --one-file       pack all information into one csv file (doesn't work
                         with another formats)
   -s, --split           splits sample name with --separator into columns
   -fix, --fix-table     fixes table after splitting by inserting empty cells
