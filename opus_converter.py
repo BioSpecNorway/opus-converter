@@ -97,7 +97,7 @@ def save(result_filename, spectra, markup, wavenumbers):
     else:
         dict = {}
         dict['wavenumbers'] = wavenumbers
-        dict['markup'] = markup
+        dict['markup'] = markup.astype(np.object)
         dict['spectra'] = spectra
         scipy.io.savemat(result_filename + '.mat', dict)
 
